@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Colegio El Cerrillo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+        }
+        .sidebar {
+            width: 280px;
+            background-color: #343a40;
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            transition: all 0.3s;
+        }
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+        .sidebar-menu a {
+            padding: 0.8rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .sidebar-menu i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        .content {
+            flex: 1;
+            margin-left: 280px;
+            transition: all 0.3s;
+        }
+        .navbar-dashboard {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .user-dropdown img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .stats-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        .table-responsive {
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .toggle-sidebar {
+            display: none;
+        }
+        @media (max-width: 992px) {
+            .sidebar {
+                margin-left: -280px;
+            }
+            .content {
+                margin-left: 0;
+            }
+            .sidebar.active {
+                margin-left: 0;
+            }
+            .content.active {
+                margin-left: 280px;
+            }
+            .toggle-sidebar {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h4 class="mb-0">
+                <i class="bi bi-house-door"></i>
+                Colegio El Cerrillo
+            </h4>
+            <p class="btn btn-primary mb-0 mt-1">Panel de Administración</p>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{{url_for('dashboard.index')}}" class="active">
+                <i class="bi bi-speedometer2"></i>
+                Dashboard
+            </a>
+            <a href="{{url_for('usuarios.index')}}">
+                <i class="bi bi-people"></i>
+                Usuarios
+            </a>
+           
+            <a href="" id="ayudaDashboard">
+                <i class="bi bi-question-circle"></i>
+                Ayuda
+            </a>
+            <a href="{{url_for('auth.logout')}}">
+                <i class="bi bi-box-arrow-left"></i>
+                Cerrar Sesión
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content" id="content">
+        <!-- Navbar -->
+        <nav class="navbar navbar-dashboard navbar-expand-lg navbar-light sticky-top py-3">
+            <div class="container-fluid">
+                <button class="btn btn-outline-secondary toggle-sidebar me-2" id="toggleSidebar">
+                    <i class="bi bi-list"></i>
+                </button>
+                <span class="navbar-brand d-none d-lg-block">Dashboard</span>
+                
+            </div>
+        </nav>
+
+        <!-- Dashboard Content -->
+        <div class="container-fluid py-4">
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-md-6 col-lg-3 mb-3">
+                    <div class="stats-card card border-0 h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted">Total Publicaciones</h6>
+                                    <h3 class="mb-0"> {{tp}} </h3>
+                                </div>
+                                <div class="bg-primary bg-opacity-10 p-3 rounded">
+                                    <i class="bi bi-calendar-event text-primary fs-4"></i>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 mb-3">
+                    <div class="stats-card card border-0 h-100">
+                        <div class="card-body">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 mb-3">
+                    <div class="stats-card card border-0 h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted">Total Usuarios</h6>
+                                    <h3 class="mb-0"> {{tu}} </h3>
+                                </div>
+                                <div class="bg-info bg-opacity-10 p-3 rounded">
+                                    <i class="bi bi-people text-info fs-4"></i>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 mb-3">
+                    <div class="stats-card card border-0 h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Sections -->
+            <div class="row">
+                <!-- Publications Table -->
+                <div class="col-lg-8 mb-4" id="publicationsTable">
+                    <div class="card border-0">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Publicaciones Recientes</h5>
+                            <button class="btn btn-primary btn-sm" id="newPublicationBtn">
+                                <i class="bi bi-plus-circle me-1"></i>Nueva Publicación
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Título</th>
+                                            <th>Fecha</th>
+                                            <th>Tipo</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {%for i in publicaciones%}
+                                        <tr>
+                                            <td> {{ i.titulo }} </td>
+                                            <td> {{ i.fecha }} </td>
+                                            <td><span class="badge bg-warning"> {{ i.tipo }} </span></td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="{{url_for('dashboard.v_editar_publicacion', id=i.id)}}" class="btn btn-outline-primary edit-btn" ><i class="bi bi-pencil"></i></a>
+                                                    <a href="{{url_for('dashboard.eliminar_publicacion', id=i.id)}}" class="btn btn-outline-danger delete-btn" data-id="1"><i class="bi bi-trash"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {%endfor%}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+    <!-- Publication Form Modal -->
+    <div class="modal fade" id="publicationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Nueva Publicación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{url_for('dashboard.add_publicacion')}}" method="POST" id="publicationForm">
+                        <input type="hidden" id="publicationId">
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <label for="title" class="form-label">Título de la Reunión</label>
+                                <input type="text" class="form-control" name="titulo" id="title" placeholder="Reunion de apoderado 1° Basico" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="type" class="form-label">Tipo</label>
+                                <select class="form-select" name="tipo" id="type" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Padres">Padres</option>
+                                    <option value="Docentes">Docentes</option>
+                                    <option value="Administrativa">Administrativa</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="date" class="form-label">Fecha</label>
+                                <input type="text" class="form-control" name="fecha" id="date" placeholder="25 marzo 2025" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="startTime" class="form-label">Hora Inicio</label>
+                                <input type="text" class="form-control" name="hora_inicio" id="startTime" placeholder="14:30" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="endTime" class="form-label">Hora Fin</label>
+                                <input type="text" class="form-control" name="hora_fin" id="endTime" placeholder="16:30" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Ubicación</label>
+                            <input type="text" class="form-control" name="ubicacion" id="location" placeholder="Escuela, Sala 1° Basico" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Descripción</label>
+                            <textarea class="form-control" name="descripcion" id="description" rows="4" placeholder="La reunion es para ver avances de los estudiantes" required></textarea>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="organizer" class="form-label">Organizador</label>
+                                <input type="text" name="organizador" class="form-control" placeholder="Maria Cancino Profesora 1° Basico" id="organizer">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" id="savePublication">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro de que desea eliminar esta publicación? Esta acción no se puede deshacer.</p>
+                    <input type="hidden" id="deleteId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{url_for('static', filename='js/funciones.js')}}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle sidebar on mobile
+            const toggleSidebar = document.getElementById('toggleSidebar');
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            
+            if (toggleSidebar) {
+                toggleSidebar.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                    content.classList.toggle('active');
+                });
+            }
+            
+            // Publication modal
+            const publicationModal = new bootstrap.Modal(document.getElementById('publicationModal'));
+            const newPublicationBtn = document.getElementById('newPublicationBtn');
+            const editBtns = document.querySelectorAll('.edit-btn');
+            const savePublication = document.getElementById('savePublication');
+            
+            // New publication button
+            if (newPublicationBtn) {
+                newPublicationBtn.addEventListener('click', function() {
+                    document.getElementById('modalTitle').textContent = 'Nueva Publicación';
+                    document.getElementById('publicationForm').reset();
+                    document.getElementById('publicationId').value = '';
+                    publicationModal.show();
+                });
+            }
+            
+            // Edit buttons
+            editBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    document.getElementById('modalTitle').textContent = 'Editar Publicación';
+                    document.getElementById('publicationId').value = id;
+                    
+                    // In a real app, you would fetch the publication data from the server
+                    // For demo purposes, we'll just populate with dummy data
+                    if (id === '1') {
+                        document.getElementById('title').value = 'Reunión General de Padres';
+                        document.getElementById('type').value = 'Padres';
+                        document.getElementById('date').value = '2025-03-15';
+                        document.getElementById('startTime').value = '18:00';
+                        document.getElementById('endTime').value = '20:00';
+                        document.getElementById('location').value = 'Auditorio Principal';
+                        document.getElementById('description').value = 'Reunión informativa sobre el rendimiento académico del primer trimestre y actividades planificadas.';
+                        document.getElementById('organizer').value = 'Dirección Académica';
+                        document.getElementById('contact').value = 'direccion@colegiosanmartin.edu';
+                        document.getElementById('statusPublished').checked = true;
+                    }
+                    
+                    publicationModal.show();
+                });
+            });
+            
+            
+            
+            // Delete publication
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            const deleteBtns = document.querySelectorAll('.delete-btn');
+            const confirmDelete = document.getElementById('confirmDelete');
+            
+            deleteBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    document.getElementById('deleteId').value = id;
+                    deleteModal.show();
+                });
+            });
+            
+            if (confirmDelete) {
+                confirmDelete.addEventListener('click', function() {
+                    const id = document.getElementById('deleteId').value;
+                    // In a real app, you would send a delete request to the server
+                    alert('Publicación eliminada con éxito');
+                    deleteModal.hide();
+                });
+            }
+            
+            // Navigation between sections
+            const publicationsLink = document.getElementById('publicationsLink');
+            const publicationsTable = document.getElementById('publicationsTable');
+            
+            if (publicationsLink && publicationsTable) {
+                publicationsLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    publicationsTable.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
