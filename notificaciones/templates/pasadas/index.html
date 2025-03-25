@@ -101,7 +101,14 @@
                 </div>
             {%endfor%}
             </div>
-     </section>       
+     </section>   
+    {%if not public%}    
+     <div class="container p-4">
+        <center>
+            <h2> ¡No hay publicaciones anteriores por el momento!</h2>
+        </center>
+     </div>
+     {%endif%}
 
     <!-- Footer -->
     <footer class="footer">
